@@ -22,8 +22,7 @@ training_transforms = Compose([transforms.Resize((300, 300)), transforms.ToTenso
 train_dataset = torchvision.datasets.ImageFolder(root= dataset_path, transform= training_transforms)
 train_loader = torch.utils.data.DataLoader(dataset= train_dataset, batch_size= 30, shuffle= False)
 
-#Preprocesamiento de las imagenes
-
+#Mean and Standard Deviation of each image
 def get_mean_std(loader):
   mean = 0
   std = 0
@@ -42,6 +41,7 @@ def get_mean_std(loader):
 
 mean, std = get_mean_std(train_loader)
 
+#Images preprocessing
 transforms2 = Compose(
         [T.Resize((300,300)),
          T.RandomHorizontalFlip(),
@@ -68,21 +68,21 @@ dataloaders = {x:torch.utils.data.DataLoader(datasets[x], batch_size= 30, shuffl
 train_dataloader = dataloaders['train']
 test_dataloader = dataloaders['val']
 
-# Función que muestra imagenes aleatorias
+# Function that shows random images
 def imshow(img):
     npimg = img.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
     plt.show()
 
-# Imágenes aleatorieas del dataset
+# Random images from dataset
 dataiter = iter(train_dataloader)
 images, labels = dataiter.next()
 
 
-# Mostrar imágenes
+# Show images
 imshow(torchvision.utils.make_grid(images))
 
-#Construcción de la red neuronal
+#Construction of the neural network
 class MyNet(nn.Module):
     def __init__(self):
         super().__init__()
@@ -122,7 +122,7 @@ for epoch in range(15): #Tunear esto
 dataiter = iter(test_dataloader)
 images, labels = dataiter.next()
 
-#Imprimir las imágenes
+#Print images
 imshow(torchvision.utils.make_grid(images))
 
 print('Real Labels: ', ' '.join(f'{classes[labels[j]]:5s}' for j in range(30)))
@@ -146,8 +146,7 @@ for i in range(30):
 cont /= 30
 print(cont)
 
-#Validación parcial del modelo
-
+#Partial validation of the model (Validation set)
 correct = 0
 total = 0
 true = []
@@ -176,13 +175,11 @@ with torch.no_grad():
         for i in range(labels.size(0)):
             if lab[i] == predictions[i]:
                 correct += 1
-
+                
+#Evaluation metrics:
 print(f"Accuracy of the network is: {correct / total}")
 
-#Métricas de evaluación:
-
-#Graficar matriz de confusión
-
+#Graph confusion matrix
 if len(true) != len(pred):
     print(len(true))
     print(len(pred))
@@ -193,23 +190,22 @@ else:
     sns.heatmap(df_cm, annot = True)
     plt.savefig('Confusion_matrix956')
 
-# La exhaustividad representa el número de positivos que nuestro modelo cree que existen comparado con el número de positivos reales
+#Recall represents True Positive Rate
 recall = cf[1][1]/(cf[1][1] + cf[1][0])
 
-# La precisión es la proporción de predicciones positivas que esta verdaaderamente correcta
+#Precision represents False Postitve Rate
 precision = cf[1][1]/(cf[1][1] + cf[0][1])
 
 print("Exhaustividad del Modelo: {} y Precisión del Modelo: {}".format(recall.round(5), precision.round(5)))
 
-# EL f1-score representa la media armónica de la exhaustividad y la precisión
-
+#F1 represents armonic mean of recall and precision
 f1 = f1_score(true, pred)
 
 print(f"F1-score del Modelo: {f1}")
 
 fpr, tpr, _ = roc_curve(true, full_outs)
 
-# Graficar Curva ROC
+# Graph ROC Curve
 plt.plot(fpr, tpr)
 plt.xlabel('True Positive Rate')
 plt.ylabel('False Positive Rate')
@@ -217,13 +213,11 @@ plt.show()
 plt.savefig('CurvaROC')
 
 #AUC Score
-
 auc_score = roc_auc_score(true, full_outs)
 
 print(f"ROC-AUC del Modelo: {auc_score}")
 
-#Validación total del modelo:
-
+#Total validation of the model (Test set):
 correct = 0
 total = 0
 true = []
@@ -252,5 +246,44 @@ with torch.no_grad():
         for i in range(labels.size(0)):
             if lab[i] == predictions[i]:
                 correct += 1
-
+                
+#Evaluation metrics:
 print(f"Accuracy of the network is: {correct / total}")
+
+#Graph confusion matrix
+if len(true) != len(pred):
+    print(len(true))
+    print(len(pred))
+else:
+    cf = confusion_matrix(true, pred)
+    df_cm = pd.DataFrame(cf/len(true), index = [j for j in classes], columns = [j for j in classes])
+    plt.figure(figsize = (12, 7))
+    sns.heatmap(df_cm, annot = True)
+    plt.savefig('Confusion_matrix956')
+
+#Recall represents True Positive Rate
+recall = cf[1][1]/(cf[1][1] + cf[1][0])
+
+#Precision represents False Postitve Rate
+precision = cf[1][1]/(cf[1][1] + cf[0][1])
+
+print("Exhaustividad del Modelo: {} y Precisión del Modelo: {}".format(recall.round(5), precision.round(5)))
+
+#F1 represents armonic mean of recall and precision
+f1 = f1_score(true, pred)
+
+print(f"F1-score del Modelo: {f1}")
+
+fpr, tpr, _ = roc_curve(true, full_outs)
+
+# Graph ROC Curve
+plt.plot(fpr, tpr)
+plt.xlabel('True Positive Rate')
+plt.ylabel('False Positive Rate')
+plt.show()
+plt.savefig('CurvaROC')
+
+#AUC Score
+auc_score = roc_auc_score(true, full_outs)
+
+print(f"ROC-AUC del Modelo: {auc_score}")
