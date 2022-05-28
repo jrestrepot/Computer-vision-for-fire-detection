@@ -1,6 +1,6 @@
 # Computer Vision for fire detection using Convolutional Neural Networks
 
-In this folder, you can find an in-depth explanation on the resources needed, as well as an explanation for each section of the code. 
+In this README, you can find an in-depth explanation on the resources needed, as well as an explanation for each section of the code. 
 Each section is well commented in order to create a nice environment for the reader to understand everything correctly.
 
 # Code Sections
