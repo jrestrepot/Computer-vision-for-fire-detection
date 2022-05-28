@@ -8,9 +8,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
 ARG NODE_VERSION="none"
 RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 RUN pip3 install numpy
-RUN pip3 install geopandas
-RUN pip3 install fiona
-RUN pip3 install xlsxwriter
 RUN pip3 install matplotlib
 RUN pip3 install pandas
 RUN apt-get update && apt-get install -y python3-opencv
