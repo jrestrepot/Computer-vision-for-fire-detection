@@ -14,7 +14,10 @@ a random 50% chance, and finally, normalizing them using the mean and standard d
 into batches to split them up into three subsets. The first split has a 70 - 30 proportion. Then, the 70% subset is split into 
 two new ones consisting of a 75 - 25 proportion. This way, the three subsets represent 52.5%, 17.5%, and 30% respectively.
 - Show random images: The first batch of images from the training dataset is then shown on a single plot.
-- Network model creation:
+- Network model creation: The neural network's architecture was defined. We used two convolutional layers, two pooling layers and 
+three linear layers. The activation function for all layers is the Relu function, except for the last layer who uses a Sigmoid 
+function. The loss and optimizer functions used are the Binary Cross Entropy and Stochastic Gradient Descent function, 
+respectively.
 - Training the CNN: For 15 epochs, we train the model using the training subset. The loss is calculated using Binary Cross-Entropy 
 and the optimizer used for this process was SGD (Stochastic Gradient Descent). Loss for each epoch is printed to look at how the 
 model is doing after each run is finished.
@@ -24,3 +27,9 @@ to validate it. The results obtained from the model are then compared with the t
 f1-score, ROC, curve, and ROC-AUC score.
 - Final model's validation: Data from the final testing subset (which consists of 30% of the data) is used to validate it. 
 The results obtained from the model are then compared with the true labels to check for the accuracy of the model.
+
+# DockerFile:
+The dockerfile installs all the libraries that were neccesary for the development of the project.
+
+# DATA:
+The data was retrieved from https://www.kaggle.com/datasets/phylake1337/fire-dataset?resource=download
